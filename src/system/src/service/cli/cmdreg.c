@@ -16,6 +16,7 @@ void (*s_cli_cmdSelector(const char * const cmd))(const char * const) {
     CMD_REG(busw)
     CMD_REG(memr)
     CMD_REG(rdmsr)
+    CMD_REG(diskr)
     CMD_REG(uptime)
     
     return 0;

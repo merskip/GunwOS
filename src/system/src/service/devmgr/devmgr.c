@@ -23,6 +23,8 @@ extern struct gnwDriverDesc s_drv_pit();
 extern struct gnwDeviceUHA s_drv_pit_uha();
 extern struct gnwDriverDesc s_drv_keyboard();
 extern struct gnwDeviceUHA s_drv_keyboard_uha();
+extern struct gnwDriverDesc s_drv_fdc();
+extern struct gnwDeviceUHA s_drv_fdc_uha();
 
 extern int s_trm_putc(const char c);
 extern int s_trm_puts(const char * const s);
@@ -125,6 +127,23 @@ void s_devmgr_init() {
     else {
         e = s_devmgr_start(kbd);
         if (e != NO_ERROR) { LOG_FATAL("Fatal error: Keyboard driver startup failed"); return; }
+    }
+
+    /*
+        Floppy disk controller driver for 82077AA chip
+    */
+    struct gnwDeviceDescriptor fdc = createDeviceDescriptor(DEV_TYPE_FDC,
+                                                            s_drv_fdc_uha(),
+                                                            0x3F0,
+                                                            s_drv_fdc(),
+                                                            "82077AA Floppy Disk Controller");
+    e = s_devmgr_install(fdc);
+    if (e != NO_ERROR) { 
+        LOG_ERR("Driver error: Floppy disk controller driver installation failed");
+    }
+    else {
+        e = s_devmgr_start(fdc);
+        if (e != NO_ERROR) { LOG_ERR("Driver error: Floppy disk controller driver startup failed"); }
     }
 }
 
